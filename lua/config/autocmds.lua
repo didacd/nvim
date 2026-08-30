@@ -7,6 +7,13 @@
 -- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 
+local agent_reload = vim.api.nvim_create_augroup("agent_reload", { clear = true })
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold" }, {
+  group = agent_reload,
+  command = "checktime",
+  desc = "Reload files changed by external agents",
+})
+
 vim.api.nvim_create_user_command("Reload", function()
   -- Unload all custom configuration modules
   for name, _ in pairs(package.loaded) do
@@ -18,7 +25,7 @@ vim.api.nvim_create_user_command("Reload", function()
   -- Source the main init.lua
   local init_path = vim.fn.stdpath("config") .. "/init.lua"
   local ok, err = pcall(dofile, init_path)
-  
+
   if ok then
     vim.notify("Neovim configuration reloaded successfully", vim.log.levels.INFO, { title = "Config" })
   else

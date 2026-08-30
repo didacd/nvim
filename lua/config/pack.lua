@@ -19,7 +19,8 @@ vim.pack.add({
   gh("nvim-telescope/telescope.nvim"),
   gh("folke/snacks.nvim"),
   gh("echasnovski/mini.icons"),
-  gh("nickjvandyke/opencode.nvim"),
+  gh("nvim-mini/mini.diff"),
+  gh("esmuellert/codediff.nvim"),
 
   -- Syntax & Code Colorization
   gh("nvim-treesitter/nvim-treesitter"),
