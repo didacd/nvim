@@ -1,3 +1,30 @@
+local cursor_diagnostic_group = vim.api.nvim_create_augroup("cursor_diagnostic", { clear = true })
+local cursor_diagnostic_enabled = false
+
+local function toggle_cursor_diagnostic()
+  cursor_diagnostic_enabled = not cursor_diagnostic_enabled
+  vim.api.nvim_clear_autocmds({ group = cursor_diagnostic_group })
+
+  if cursor_diagnostic_enabled then
+    vim.api.nvim_create_autocmd("CursorHold", {
+      group = cursor_diagnostic_group,
+      callback = function()
+        if vim.bo.buftype ~= "" then return end
+        local line = vim.api.nvim_win_get_cursor(0)[1] - 1
+        if #vim.diagnostic.get(0, { lnum = line }) > 0 then
+          vim.diagnostic.open_float({ scope = "cursor", focusable = false })
+        end
+      end,
+      desc = "Show the cursor diagnostic after a pause",
+    })
+  end
+
+  vim.notify(
+    "Cursor diagnostics " .. (cursor_diagnostic_enabled and "enabled" or "disabled"),
+    vim.log.levels.INFO
+  )
+end
+
 local keymaps = {
   -- Window navigation
   { "n", "<C-h>", "<C-w>h", desc = "Go to Left Window" },
@@ -196,6 +223,7 @@ local keymaps = {
   { "n", "<leader>sl", "<cmd>Telescope loclist<cr>", desc = "Location List" },
   { "n", "<leader>sd", "<cmd>Telescope diagnostics bufnr=0<cr>", desc = "Document Diagnostics" },
   { "n", "<leader>sD", "<cmd>Telescope diagnostics<cr>", desc = "Workspace Diagnostics" },
+  { "n", "<leader>ss", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", desc = "Workspace Symbols" },
   { "n", "<leader>uC", "<cmd>Telescope colorscheme<cr>", desc = "Colorschemes" },
 
   -- Git
@@ -214,9 +242,50 @@ local keymaps = {
   -- Trouble
   { "n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics (Trouble)" },
   { "n", "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer Diagnostics (Trouble)" },
-  { "n", "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", desc = "Symbols (Trouble)" },
+  { "n", "<leader>cs", "<cmd>Trouble symbols toggle<cr>", desc = "Symbols (Trouble)" },
+  { "n", "<leader>cS", "<cmd>Trouble lsp toggle<cr>", desc = "LSP References/Definitions (Trouble)" },
+  { "n", "<leader>ci", "<cmd>Trouble lsp_incoming_calls toggle<cr>", desc = "Incoming Calls (Trouble)" },
+  { "n", "<leader>co", "<cmd>Trouble lsp_outgoing_calls toggle<cr>", desc = "Outgoing Calls (Trouble)" },
   { "n", "<leader>xL", "<cmd>Trouble loclist toggle<cr>", desc = "Location List (Trouble)" },
   { "n", "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix List (Trouble)" },
+  {
+    "n",
+    "<leader>xE",
+    "<cmd>Trouble diagnostics toggle filter.severity=vim.diagnostic.severity.ERROR<cr>",
+    desc = "Errors (Trouble)",
+  },
+  { "n", "<leader>xt", "<cmd>Trouble todo toggle<cr>", desc = "Todo (Trouble)" },
+  { "n", "<leader>xT", "<cmd>Trouble todo toggle filter={tag={TODO,FIX,FIXME}}<cr>", desc = "Todo/Fix/Fixme (Trouble)" },
+  {
+    "n",
+    "[q",
+    function()
+      if require("trouble").is_open() then
+        require("trouble").prev({ skip_groups = true, jump = true })
+      else
+        local ok, err = pcall(vim.cmd.cprev)
+        if not ok then
+          vim.notify(err, vim.log.levels.ERROR)
+        end
+      end
+    end,
+    desc = "Previous Trouble/Quickfix Item",
+  },
+  {
+    "n",
+    "]q",
+    function()
+      if require("trouble").is_open() then
+        require("trouble").next({ skip_groups = true, jump = true })
+      else
+        local ok, err = pcall(vim.cmd.cnext)
+        if not ok then
+          vim.notify(err, vim.log.levels.ERROR)
+        end
+      end
+    end,
+    desc = "Next Trouble/Quickfix Item",
+  },
 
   -- LSP
   { "n", "<leader>cl", "<cmd>LspInfo<cr>", desc = "Lsp Info" },
@@ -232,7 +301,33 @@ local keymaps = {
   { "n", "<leader>cc", vim.lsp.codelens.run, desc = "Run Codelens" },
   { "n", "<leader>cC", vim.lsp.codelens.refresh, desc = "Refresh Codelens" },
   { "n", "<leader>cr", vim.lsp.buf.rename, desc = "Rename" },
+  {
+    "n",
+    "<leader>uh",
+    function()
+      local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = 0 })
+      vim.lsp.inlay_hint.enable(not enabled, { bufnr = 0 })
+    end,
+    desc = "Toggle Inlay Hints",
+  },
+  {
+    "n",
+    "<leader>uv",
+    function()
+      vim.diagnostic.config({ virtual_text = not vim.diagnostic.config().virtual_text })
+    end,
+    desc = "Toggle Diagnostic Virtual Text",
+  },
+  { "n", "<leader>uD", toggle_cursor_diagnostic, desc = "Toggle Cursor Diagnostics" },
   { "n", "<leader>cd", vim.diagnostic.open_float, desc = "Line Diagnostics" },
+  {
+    "n",
+    "<leader>ld",
+    function()
+      vim.diagnostic.open_float({ scope = "cursor" })
+    end,
+    desc = "Cursor Diagnostic",
+  },
   { "n", "]d", vim.diagnostic.goto_next, desc = "Next Diagnostic" },
   { "n", "[d", vim.diagnostic.goto_prev, desc = "Prev Diagnostic" },
   {
@@ -267,6 +362,10 @@ local keymaps = {
     end,
     desc = "Prev Warning",
   },
+  { "n", "]t", function() require("todo-comments").jump_next() end, desc = "Next Todo Comment" },
+  { "n", "[t", function() require("todo-comments").jump_prev() end, desc = "Prev Todo Comment" },
+  { "n", "<leader>st", "<cmd>TodoTelescope<cr>", desc = "Todo" },
+  { "n", "<leader>sT", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>", desc = "Todo/Fix/Fixme" },
 }
 
 for _, keymap in ipairs(keymaps) do

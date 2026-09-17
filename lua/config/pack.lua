@@ -9,6 +9,7 @@ vim.pack.add({
   gh("nvim-lualine/lualine.nvim"),
   gh("akinsho/bufferline.nvim"),
   gh("folke/trouble.nvim"),
+  gh("folke/todo-comments.nvim"),
   gh("folke/which-key.nvim"),
   gh("folke/noice.nvim"),
   gh("MunifTanjim/nui.nvim"), -- Dependency for noice
