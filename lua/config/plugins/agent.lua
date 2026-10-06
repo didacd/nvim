@@ -1,4 +1,5 @@
 require("mini.diff").setup()
+require("config.ai").setup()
 
 require("codediff").setup({
   diff = {
