@@ -14,10 +14,14 @@ require("which-key").add({
   { "<leader>E", icon = "󰙅 " },
   { "<leader>f", group = "file/find" },
   { "<leader>g", group = "git" },
-  { "<leader>o", group = "opencode" },
   { "<leader>q", group = "quit/session" },
   { "<leader>s", group = "search" },
   { "<leader>u", group = "ui" },
   { "<leader>w", group = "windows" },
   { "<leader>x", group = "diagnostics/quickfix" },
 })
+
+local ai = require("config.ai")
+if ai.enabled then
+  require("which-key").add({ { "<leader>o", group = "AI · " .. ai.agent } })
+end

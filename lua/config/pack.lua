@@ -1,6 +1,6 @@
 local gh = function(x) return 'https://github.com/' .. x end
 
-vim.pack.add({
+local plugins = {
   -- Core Dependencies
   gh("nvim-lua/plenary.nvim"),
 
@@ -40,4 +40,13 @@ vim.pack.add({
   gh("hrsh7th/cmp-path"),
   gh("hrsh7th/cmp-emoji"),
   gh("L3MON4D3/LuaSnip"),
-}, { load = true })
+}
+
+local ai = require("config.ai")
+if ai.enabled then
+  plugins[#plugins + 1] = {
+    src = gh(ai.integration == "opencode" and "nickjvandyke/opencode.nvim" or "folke/sidekick.nvim"),
+    version = "main", -- OpenCode V2 support lives on main, not the V1 release tags.
+  }
+end
+vim.pack.add(plugins, { load = true })

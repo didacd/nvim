@@ -71,20 +71,6 @@ local keymaps = {
     desc = "Buffer Local Keymaps (which-key)",
   },
 
-  -- Agent workflow
-  {
-    { "n", "t" },
-    "<leader>ot",
-    function()
-      local cwd = vim.fs.root(0, ".git") or vim.fn.getcwd()
-      Snacks.terminal.toggle("opencode2", {
-        cwd = cwd,
-        win = { position = "right", width = 0.4 },
-      })
-    end,
-    desc = "Toggle OpenCode",
-  },
-
   -- Noice
   { "n", "<leader>sn", "", desc = "+noice" },
   {
@@ -367,6 +353,8 @@ local keymaps = {
   { "n", "<leader>st", "<cmd>TodoTelescope<cr>", desc = "Todo" },
   { "n", "<leader>sT", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>", desc = "Todo/Fix/Fixme" },
 }
+
+vim.list_extend(keymaps, require("config.ai").keymaps())
 
 for _, keymap in ipairs(keymaps) do
   local opts = {}
