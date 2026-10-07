@@ -32,7 +32,7 @@ function M.context(kind)
 
   local context = contexts[kind]
   if M.integration == "opencode" then
-    require("opencode").ask(context.opencode .. ": ")
+    require("config.ai.session").ask(M, context.opencode .. ": ")
   else
     stage_sidekick({ msg = context.sidekick })
   end
@@ -44,7 +44,7 @@ function M.ask()
   end
 
   if M.integration == "opencode" then
-    require("opencode").ask("@this: ")
+    require("config.ai.session").ask(M, "@this: ")
   else
     -- Render before opening input so the original editor context is retained.
     local cli = require("sidekick.cli")

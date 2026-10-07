@@ -1,4 +1,5 @@
 local M = {}
+local native_terminals = {}
 
 local function terminal(settings, toggle)
   -- Match opencode.nvim's session targeting: Neovim's working directory.
@@ -9,15 +10,16 @@ local function terminal(settings, toggle)
   local snacks = require("snacks")
   local command = { settings.commands[settings.agent] }
   if toggle then
-    snacks.terminal.toggle(command, opts)
+    native_terminals[opts.cwd] = snacks.terminal.toggle(command, opts)
   else
-    snacks.terminal.open(command, opts)
+    native_terminals[opts.cwd] = snacks.terminal.open(command, opts)
   end
 end
 
 local function setup_opencode(settings)
   local function start()
-    terminal(settings, false)
+    -- Discovery needs the service, not an unrelated TUI/session.
+    vim.fn.jobstart({ settings.commands[settings.agent], "service", "start" })
   end
   vim.g.opencode_opts = { server = { start = start } }
   -- Assign directly too: the plugin may already have loaded its config.
@@ -56,10 +58,27 @@ end
 
 function M.toggle(settings)
   if settings.integration == "opencode" then
-    terminal(settings, true)
+    local existing = native_terminals[vim.fn.getcwd()]
+    if existing and existing:buf_valid() then
+      existing:toggle()
+    else
+      terminal(settings, true)
+    end
   else
     require("sidekick.cli").toggle({ name = settings.tool })
   end
+end
+
+function M.is_open()
+  local existing = native_terminals[vim.fn.getcwd()]
+  return existing and existing:valid() or false
+end
+
+function M.open_session(settings, id)
+  native_terminals[vim.fn.getcwd()] = require("snacks").terminal.open(
+    { settings.commands[settings.agent], "--session", id },
+    { cwd = vim.fn.getcwd(), win = { position = "right", width = 0.4 } }
+  )
 end
 
 return M

@@ -30,6 +30,10 @@ All AI mappings use **Space → o**; which-key labels the selected agent:
 | `oq` | Stage quickfix context |
 | `oc` | OpenCode actions/commands (native integration only) |
 
+When the native OpenCode pane is closed or hidden, confirming Ask creates a new
+session and opens its terminal with the message. An already-open pane retains
+the existing project session. Cancelling input creates no session.
+
 Native OpenCode context actions open editable prompt input; confirming submits
 through its API. Sidekick stages text in the selected CLI; submit from the CLI
 when ready. The native `oc` action picker also includes actions that execute
