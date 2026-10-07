@@ -1,5 +1,6 @@
 tt.*
 .tests
+/tests/
 doc/tags
 debug
 .repro

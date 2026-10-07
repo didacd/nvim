@@ -23,5 +23,8 @@ require("which-key").add({
 
 local ai = require("config.ai")
 if ai.enabled then
-  require("which-key").add({ { "<leader>o", group = "AI · " .. ai.agent } })
+  require("which-key").add({
+    { "<leader>o", group = "AI · " .. ai.agent },
+    { "<leader>oh", group = "Git hunks" },
+  })
 end
