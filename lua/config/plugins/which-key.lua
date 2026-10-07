@@ -16,6 +16,7 @@ require("which-key").add({
   { "<leader>g", group = "git" },
   { "<leader>q", group = "quit/session" },
   { "<leader>s", group = "search" },
+  { "<leader>t", group = "terminals", icon = "" },
   { "<leader>u", group = "ui" },
   { "<leader>w", group = "windows" },
   { "<leader>x", group = "diagnostics/quickfix" },

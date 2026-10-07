@@ -29,15 +29,6 @@ All AI mappings use **Space → o**; which-key labels the selected agent:
 | `od` | Explain diagnostics (normal/visual mode) |
 | `oq` | Stage quickfix context |
 | `oc` | OpenCode actions/commands (native integration only) |
-| `ohs` | Stage the full Git hunk under the cursor in a normal buffer |
-| `ohr` | Revert the full hunk to the Git index, after confirmation |
-| `ohv` | Toggle the diff overlay in a normal buffer |
-
-Hunk actions use mini.diff against the Git index, regardless of who made the
-changes. Staging does not save or commit the file. Reverting changes the buffer
-only: undo with `u`, or save with `:w` to persist it. Untracked files without a
-Git reference cannot use these hunk actions. Use `[h` / `]h` to navigate mini.diff
-hunks, then `Space → o → h → s` to stage or `Space → o → h → r` to revert.
 
 Native OpenCode context actions open editable prompt input; confirming submits
 through its API. Sidekick stages text in the selected CLI; submit from the CLI
@@ -52,7 +43,6 @@ avoid multiple competing sessions there. Context actions warn and stop if the
 current buffer has unsaved edits, since file references are read from disk.
 No automatic saves or permission bypasses are enabled.
 
-Use `<leader>gd` for working-tree review and `<leader>go` for diff overlays.
 Run `:checkhealth opencode` or `:checkhealth sidekick` for integration diagnostics.
 Sidekick requires Neovim 0.11.2 or newer; all CLIs need their own authentication.
 
@@ -62,13 +52,6 @@ Run the configuration/adapter tests without installing plugins or sending prompt
 
 ```sh
 nvim --headless -u NONE -l tests/ai.lua
-```
-
-Test staging and confirmed reverts using the installed mini.diff plugin in a
-disposable Git repository (created under `/tmp/opencode`):
-
-```sh
-nvim --headless -u NONE -l tests/hunks.lua
 ```
 
 After changing agents, manually verify terminal toggle/reuse, selection context,

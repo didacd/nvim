@@ -22,6 +22,7 @@ local plugins = {
   gh("echasnovski/mini.icons"),
   gh("nvim-mini/mini.diff"),
   gh("esmuellert/codediff.nvim"),
+  gh("f-person/git-blame.nvim"),
 
   -- Syntax & Code Colorization
   gh("nvim-treesitter/nvim-treesitter"),

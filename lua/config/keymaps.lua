@@ -31,6 +31,10 @@ local keymaps = {
   { "n", "<C-j>", "<C-w>j", desc = "Go to Lower Window" },
   { "n", "<C-k>", "<C-w>k", desc = "Go to Upper Window" },
   { "n", "<C-l>", "<C-w>l", desc = "Go to Right Window" },
+  { "n", "<leader>wh", "<C-w>h", desc = "Go to Left Window" },
+  { "n", "<leader>wj", "<C-w>j", desc = "Go to Lower Window" },
+  { "n", "<leader>wk", "<C-w>k", desc = "Go to Upper Window" },
+  { "n", "<leader>wl", "<C-w>l", desc = "Go to Right Window" },
 
   -- Window resizing
   { "n", "<C-Up>", "<cmd>resize +2<cr>", desc = "Increase Window Height" },
@@ -56,6 +60,24 @@ local keymaps = {
   { "n", "<leader>bl", "<Cmd>BufferLineCloseLeft<CR>", desc = "Delete Buffers to the Left" },
 
   -- General
+  {
+    { "n", "t" },
+    "<leader>tt",
+    function()
+      require("config.terminals").toggle()
+    end,
+    desc = "Toggle Terminal",
+  },
+  { "n", "<leader>tv", function() require("config.terminals").toggle("vertical") end, desc = "Toggle Vertical Terminal" },
+  { "n", "<leader>th", function() require("config.terminals").toggle("horizontal") end, desc = "Toggle Horizontal Terminal" },
+  { "n", "<leader>tf", function() require("config.terminals").toggle("floating") end, desc = "Toggle Floating Terminal" },
+  { "n", "<leader>tn", function() require("config.terminals").new() end, desc = "New Terminal" },
+  { "n", "<leader>ts", function() require("config.terminals").select() end, desc = "Select Terminal" },
+  { "n", "<leader>tm", function() require("config.terminals").manage() end, desc = "Manage Terminals" },
+  { "n", "<leader>tr", function() require("config.terminals").rename() end, desc = "Rename Terminal" },
+  { "n", "<leader>tc", function() require("config.terminals").close() end, desc = "Close Terminal (Confirm)" },
+  { "n", "<leader>t]", function() require("config.terminals").cycle(1) end, desc = "Next Terminal" },
+  { "n", "<leader>t[", function() require("config.terminals").cycle(-1) end, desc = "Previous Terminal" },
   { { "i", "n", "s" }, "<esc>", "<cmd>noh<cr><esc>", desc = "Escape and Clear hlsearch" },
   { { "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", desc = "Save File" },
   { "n", "<leader>qq", "<cmd>qa<cr>", desc = "Quit All" },
@@ -213,6 +235,7 @@ local keymaps = {
   { "n", "<leader>uC", "<cmd>Telescope colorscheme<cr>", desc = "Colorschemes" },
 
   -- Git
+  { "n", "<leader>gb", "<cmd>GitBlameToggle<cr>", desc = "Toggle Git Blame" },
   { "n", "<leader>gs", "<cmd>Telescope git_status<cr>", desc = "Git Status" },
   { "n", "<leader>gc", "<cmd>Telescope git_commits<cr>", desc = "Git Commits" },
   { "n", "<leader>gd", "<cmd>CodeDiff<cr>", desc = "Review Working Tree" },
