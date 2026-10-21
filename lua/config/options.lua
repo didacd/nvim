@@ -13,6 +13,7 @@ vim.g.ai_commands = { opencode = "opencode2", codex = "codex", claude = "claude"
 
 local opt = vim.opt
 
+opt.clipboard = "unnamedplus" -- Use the system clipboard for the unnamed register
 opt.number = true
 opt.relativenumber = false
 opt.autoread = true
