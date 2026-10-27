@@ -21,6 +21,9 @@ opt.termguicolors = true -- Essential for modern themes like catppuccin
 opt.timeoutlen = 300 -- Decrease mapped sequence wait time (makes which-key snappy)
 opt.foldlevel = 99 -- Do not fold code by default when opening a file
 opt.foldlevelstart = 99
+opt.foldcolumn = "auto:1" -- Show a narrow fold column only when needed
+opt.fillchars = { foldopen = "▾", foldclose = "▸", foldsep = " ", foldinner = " " }
+opt.mouse = "a" -- Enable mouse support in all modes
 opt.expandtab = true -- Use spaces instead of tabs
 opt.tabstop = 2 -- Number of spaces a tab counts for
 opt.shiftwidth = 2 -- Number of spaces to use for each step of (auto)indent
