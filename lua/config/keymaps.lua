@@ -30,10 +30,29 @@ end
 
 local function smooth_line_scroll(direction)
   return function()
-    neoscroll.scroll(direction * vim.v.count1, {
-      move_cursor = true,
-      duration = 120,
-    })
+    local midpoint = math.floor((vim.api.nvim_win_get_height(0) + 1) / 2)
+    local cursor_motion = direction > 0 and "gj" or "gk"
+    local smooth_lines = 0
+    local count = vim.v.count1
+
+    for _ = 1, count do
+      local cursor_row = vim.fn.winline()
+      local reached_midpoint = (direction > 0 and cursor_row >= midpoint)
+        or (direction < 0 and cursor_row <= midpoint)
+
+      if reached_midpoint then
+        smooth_lines = smooth_lines + 1
+      else
+        vim.cmd.normal({ bang = true, args = { cursor_motion } })
+      end
+    end
+
+    if smooth_lines > 0 then
+      neoscroll.scroll(direction * smooth_lines, {
+        move_cursor = true,
+        duration = 120,
+      })
+    end
   end
 end
 
