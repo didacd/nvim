@@ -19,7 +19,6 @@ local plugins = {
   -- Navigation
   gh("nvim-telescope/telescope.nvim"),
   gh("folke/snacks.nvim"),
-  gh("karb94/neoscroll.nvim"),
   gh("echasnovski/mini.icons"),
   gh("nvim-mini/mini.diff"),
   gh("esmuellert/codediff.nvim"),

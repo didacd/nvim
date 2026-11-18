@@ -1,8 +1,5 @@
 local cursor_diagnostic_group = vim.api.nvim_create_augroup("cursor_diagnostic", { clear = true })
 local cursor_diagnostic_enabled = false
-local neoscroll = require("neoscroll")
-local scroll_modes = { "n", "v", "x" }
-local mouse_scroll_modes = { "n", "i", "v", "x", "s" }
 
 local function toggle_cursor_diagnostic()
   cursor_diagnostic_enabled = not cursor_diagnostic_enabled
@@ -28,82 +25,7 @@ local function toggle_cursor_diagnostic()
   )
 end
 
-local function smooth_line_scroll(direction)
-  return function()
-    local midpoint = math.floor((vim.api.nvim_win_get_height(0) + 1) / 2)
-    local cursor_motion = direction > 0 and "gj" or "gk"
-    local smooth_lines = 0
-    local count = vim.v.count1
-
-    for _ = 1, count do
-      local cursor_row = vim.fn.winline()
-      local reached_midpoint = (direction > 0 and cursor_row >= midpoint)
-        or (direction < 0 and cursor_row <= midpoint)
-
-      if reached_midpoint then
-        smooth_lines = smooth_lines + 1
-      else
-        vim.cmd.normal({ bang = true, args = { cursor_motion } })
-      end
-    end
-
-    if smooth_lines > 0 then
-      neoscroll.scroll(direction * smooth_lines, {
-        move_cursor = true,
-        duration = 120,
-      })
-    end
-  end
-end
-
-local function smooth_page_scroll(direction)
-  return function()
-    neoscroll.scroll(direction * vim.wo.scroll * vim.v.count1, {
-      move_cursor = true,
-      duration = 350,
-    })
-  end
-end
-
-local function smooth_mouse_scroll(direction, page)
-  return function()
-    local winid = vim.fn.getmousepos().winid
-    if winid <= 0 or not vim.api.nvim_win_is_valid(winid) then
-      winid = vim.api.nvim_get_current_win()
-    end
-
-    local lines
-    if page then
-      lines = vim.api.nvim_win_get_height(winid)
-    else
-      lines = tonumber(vim.o.mousescroll:match("ver:(%d+)")) or 3
-    end
-
-    neoscroll.scroll(direction * lines, {
-      move_cursor = false,
-      duration = page and 100 or 30,
-      winid = winid,
-    })
-  end
-end
-
 local keymaps = {
-  -- Smooth scrolling
-  { scroll_modes, "j", smooth_line_scroll(1), desc = "Smooth Scroll Down" },
-  { scroll_modes, "k", smooth_line_scroll(-1), desc = "Smooth Scroll Up" },
-  { scroll_modes, "<Down>", smooth_line_scroll(1), desc = "Smooth Scroll Down" },
-  { scroll_modes, "<Up>", smooth_line_scroll(-1), desc = "Smooth Scroll Up" },
-  { scroll_modes, "J", smooth_page_scroll(1), desc = "Smooth Scroll Down (Page)" },
-  { scroll_modes, "K", smooth_page_scroll(-1), desc = "Smooth Scroll Up (Page)" },
-  { scroll_modes, "<S-Down>", smooth_page_scroll(1), desc = "Smooth Scroll Down (Page)" },
-  { scroll_modes, "<S-Up>", smooth_page_scroll(-1), desc = "Smooth Scroll Up (Page)" },
-  { scroll_modes, "<PageDown>", smooth_page_scroll(1), desc = "Smooth Scroll Down (Page)" },
-  { scroll_modes, "<PageUp>", smooth_page_scroll(-1), desc = "Smooth Scroll Up (Page)" },
-  { mouse_scroll_modes, "<ScrollWheelDown>", smooth_mouse_scroll(1, false), desc = "Smooth Scroll Down" },
-  { mouse_scroll_modes, "<ScrollWheelUp>", smooth_mouse_scroll(-1, false), desc = "Smooth Scroll Up" },
-  { mouse_scroll_modes, "<S-ScrollWheelDown>", smooth_mouse_scroll(1, true), desc = "Smooth Scroll Down (Page)" },
-  { mouse_scroll_modes, "<S-ScrollWheelUp>", smooth_mouse_scroll(-1, true), desc = "Smooth Scroll Up (Page)" },
-
   -- Window navigation
   { "n", "<C-h>", "<C-w>h", desc = "Go to Left Window" },
   { "n", "<C-j>", "<C-w>j", desc = "Go to Lower Window" },
@@ -219,9 +141,6 @@ local keymaps = {
     function()
       if require("noice.lsp").scroll(4) then
         return ""
-      elseif vim.fn.mode(1):sub(1, 1) == "n" then
-        neoscroll.ctrl_f({ duration = 450 })
-        return ""
       else
         return "<c-f>"
       end
@@ -235,9 +154,6 @@ local keymaps = {
     "<c-b>",
     function()
       if require("noice.lsp").scroll(-4) then
-        return ""
-      elseif vim.fn.mode(1):sub(1, 1) == "n" then
-        neoscroll.ctrl_b({ duration = 450 })
         return ""
       else
         return "<c-b>"

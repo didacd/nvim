@@ -24,7 +24,8 @@ opt.foldlevelstart = 99
 opt.foldcolumn = "auto:1" -- Show a narrow fold column only when needed
 opt.fillchars = { foldopen = "▾", foldclose = "▸", foldsep = " ", foldinner = " " }
 opt.mouse = "a" -- Enable mouse support in all modes
+opt.smoothscroll = true
 opt.expandtab = true -- Use spaces instead of tabs
 opt.tabstop = 2 -- Number of spaces a tab counts for
 opt.shiftwidth = 2 -- Number of spaces to use for each step of (auto)indent
-opt.colorcolumn = "80" -- Draw a guide line at column 80 (best-practice line length)
+--opt.colorcolumn = "80" -- Draw a guide line at column 80 (best-practice line length)

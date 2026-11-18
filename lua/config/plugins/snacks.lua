@@ -5,6 +5,7 @@ if not _G.__snacks_setup_done then
   require("snacks").setup({
     explorer = { enabled = true },
     picker = { enabled = true },
+    scroll = { enabled = true },
     image = { enabled = true },
     input = { enabled = true },
     terminal = { enabled = true },
